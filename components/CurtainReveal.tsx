@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -48,6 +49,7 @@ export default function CurtainReveal({ onOpen }: Props) {
   const [ready, setReady] = useState(false);
   const [particles, setParticles] = useState<Particle[]>([]);
   const { playMusic } = useMusic();
+
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const started = useRef(false);
 
@@ -66,6 +68,7 @@ export default function CurtainReveal({ onOpen }: Props) {
   // Preload every image, then reveal the intro (6s safety fallback)
   useEffect(() => {
     let cancelled = false;
+
     const finish = () => {
       if (!cancelled) setReady(true);
     };
@@ -75,12 +78,13 @@ export default function CurtainReveal({ onOpen }: Props) {
         new Promise<void>((resolve) => {
           const img = new Image();
           img.onload = () => resolve();
-          img.onerror = () => resolve(); // never block on a missing file
+          img.onerror = () => resolve();
           img.src = src;
         })
     );
 
     Promise.all(loads).then(finish);
+
     const fallback = setTimeout(finish, 6000);
 
     return () => {
@@ -92,8 +96,10 @@ export default function CurtainReveal({ onOpen }: Props) {
   // Lock page scroll while the curtain is visible
   useEffect(() => {
     if (step === "done") return;
+
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+
     return () => {
       document.body.style.overflow = previous;
     };
@@ -102,32 +108,59 @@ export default function CurtainReveal({ onOpen }: Props) {
   // Clear timers on unmount
   useEffect(() => {
     const list = timers.current;
+
     return () => list.forEach(clearTimeout);
   }, []);
 
-  const startOpening = useCallback(() => {
-    if (started.current) return; // ignore double taps
-    started.current = true;
+  // Start the curtain opening animation
+  const startOpening = useCallback(
+    (playAudio = true) => {
+      if (started.current) return;
 
-    // Start music inside the tap (needed for autoplay rules),
-    // but never wait for it or let it break the animation.
-    try {
-      Promise.resolve(playMusic()).catch(() => {});
-    } catch {
-      /* ignore */
-    }
+      started.current = true;
 
-    setStep("closed");
+      // Play music only on manual click.
+      // Browsers may block audio started automatically.
+      if (playAudio) {
+        try {
+          Promise.resolve(playMusic()).catch(() => {});
+        } catch {
+          /* ignore */
+        }
+      }
 
-    timers.current.push(setTimeout(() => setStep("half"), 700));
-    timers.current.push(setTimeout(() => setStep("opening"), 1200));
-    timers.current.push(
-      setTimeout(() => {
-        setStep("done");
-        onOpen();
-      }, 4300)
-    );
-  }, [onOpen, playMusic]);
+      setStep("closed");
+
+      timers.current.push(
+        setTimeout(() => setStep("half"), 700)
+      );
+
+      timers.current.push(
+        setTimeout(() => setStep("opening"), 1200)
+      );
+
+      timers.current.push(
+        setTimeout(() => {
+          setStep("done");
+          onOpen();
+        }, 4300)
+      );
+    },
+    [onOpen, playMusic]
+  );
+
+  // AUTOMATIC OPENING:
+  // If the visitor does not click within 20 seconds,
+  // start the curtain reveal automatically.
+  useEffect(() => {
+    if (!ready || step !== "intro" || started.current) return;
+
+    const autoOpenTimer = setTimeout(() => {
+      startOpening(false);
+    }, 20000);
+
+    return () => clearTimeout(autoOpenTimer);
+  }, [ready, step, startOpening]);
 
   return (
     <AnimatePresence>
@@ -139,13 +172,19 @@ export default function CurtainReveal({ onOpen }: Props) {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.8 }}
         >
-          {/* ================= LOADING (no image) ================= */}
+          {/* ================= LOADING ================= */}
           {!ready && (
             <div className="absolute inset-0 flex items-center justify-center">
               <motion.div
                 className="h-3 w-3 rounded-full bg-[#d7b46a]"
-                animate={{ scale: [1, 1.8, 1], opacity: [0.5, 1, 0.5] }}
-                transition={{ repeat: Infinity, duration: 1.4 }}
+                animate={{
+                  scale: [1, 1.8, 1],
+                  opacity: [0.5, 1, 0.5],
+                }}
+                transition={{
+                  repeat: Infinity,
+                  duration: 1.4,
+                }}
               />
             </div>
           )}
@@ -217,7 +256,10 @@ export default function CurtainReveal({ onOpen }: Props) {
                 className="absolute left-0 top-0 h-full w-[52%]"
                 initial={{ x: 0, scaleX: 1 }}
                 animate={{ x: "-110%", scaleX: 0.9 }}
-                transition={{ duration: 2.5, ease: [0.77, 0, 0.175, 1] }}
+                transition={{
+                  duration: 2.5,
+                  ease: [0.77, 0, 0.175, 1],
+                }}
               >
                 <SafeImg
                   src={ASSETS.left}
@@ -230,7 +272,10 @@ export default function CurtainReveal({ onOpen }: Props) {
                 className="absolute right-0 top-0 h-full w-[52%]"
                 initial={{ x: 0, scaleX: 1 }}
                 animate={{ x: "110%", scaleX: 0.9 }}
-                transition={{ duration: 2.5, ease: [0.77, 0, 0.175, 1] }}
+                transition={{
+                  duration: 2.5,
+                  ease: [0.77, 0, 0.175, 1],
+                }}
               >
                 <SafeImg
                   src={ASSETS.right}
@@ -255,7 +300,7 @@ export default function CurtainReveal({ onOpen }: Props) {
                 />
               </motion.div>
 
-              {/* Gold Sparkles (deterministic) */}
+              {/* Gold Sparkles */}
               <div className="pointer-events-none absolute inset-0">
                 {Array.from({ length: 24 }).map((_, i) => (
                   <motion.div
@@ -269,15 +314,23 @@ export default function CurtainReveal({ onOpen }: Props) {
                       background: "#FFD978",
                       boxShadow: "0 0 12px #FFD978",
                     }}
-                    initial={{ opacity: 0, scale: 0 }}
+                    initial={{
+                      opacity: 0,
+                      scale: 0,
+                    }}
                     animate={{
                       opacity: [0, 1, 0],
                       y: -(80 + (i % 5) * 40),
-                      x: (i % 2 === 0 ? -1 : 1) * (20 + (i % 4) * 15),
+                      x:
+                        (i % 2 === 0 ? -1 : 1) *
+                        (20 + (i % 4) * 15),
                       scale: [0, 1.5, 0.5],
                       rotate: 360,
                     }}
-                    transition={{ duration: 2.5, delay: i * 0.06 }}
+                    transition={{
+                      duration: 2.5,
+                      delay: i * 0.06,
+                    }}
                   />
                 ))}
               </div>
@@ -287,7 +340,10 @@ export default function CurtainReveal({ onOpen }: Props) {
                 className="absolute inset-0 bg-white"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: [0, 0.18, 0] }}
-                transition={{ delay: 2.2, duration: 0.7 }}
+                transition={{
+                  delay: 2.2,
+                  duration: 0.7,
+                }}
               />
             </motion.div>
           )}
@@ -352,10 +408,12 @@ export default function CurtainReveal({ onOpen }: Props) {
                     transition={{ delay: 0.5 }}
                     className="mt-10 font-serif text-6xl text-white"
                   >
-                    Harsh
+                    Tejas
                   </motion.h1>
 
-                  <div className="my-2 text-3xl text-yellow-300">&amp;</div>
+                  <div className="my-2 text-3xl text-yellow-300">
+                    &amp;
+                  </div>
 
                   <motion.h1
                     initial={{ opacity: 0, scale: 0.8 }}
@@ -363,14 +421,14 @@ export default function CurtainReveal({ onOpen }: Props) {
                     transition={{ delay: 0.7 }}
                     className="font-serif text-6xl text-white"
                   >
-                    Disha
+                    Mansi
                   </motion.h1>
 
                   <motion.button
                     type="button"
                     whileTap={{ scale: 0.96 }}
                     whileHover={{ scale: 1.05 }}
-                    onClick={startOpening}
+                    onClick={() => startOpening(true)}
                     className="mt-16 rounded-full bg-[#F4E8CF] px-10 py-4 text-sm uppercase tracking-[0.25em] shadow-2xl"
                   >
                     Open Invitation
@@ -383,4 +441,4 @@ export default function CurtainReveal({ onOpen }: Props) {
       )}
     </AnimatePresence>
   );
-} 
+}
