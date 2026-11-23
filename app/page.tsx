@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -27,30 +26,31 @@ const HALDI_MAP_URL =
 const ENGAGEMENT_MAP_URL =
   "https://www.google.com/maps/search/?api=1&query=Madhuwan%2C+Nemle%2C+Sawantwadi%2C+Sindhudurg%2C+Maharashtra";
 
+// क्रम: साखरपुडा (शनिवार, २ जानेवारी) → हळद (रविवार, ३ जानेवारी) → विवाह (सोमवार, ४ जानेवारी)
 const events: EventItem[] = [
-  {
-    id: "haldi",
-    title: "हळद समारंभ",
-    subtitle: "मंगलमय हळदीचा सोहळा",
-    date: "शनिवार, दिनांक ०३ जानेवारी २०२६",
-    time: "सायंकाळी ५:०० वाजता",
-    venue: "तेंडोली (तळेवाडी), कुडाळ",
-    mapUrl: HALDI_MAP_URL,
-    details:
-      "शनिवार, दिनांक ०३ जानेवारी २०२६ रोजी सायंकाळी ५:०० वाजता तेंडोली (तळेवाडी), कुडाळ येथे हळद समारंभ आयोजित केला आहे.",
-    image: "/wedding/Tejas and Mansi’s Marathi Wedding Invitation.png",
-  },
   {
     id: "engagement",
     title: "साखरपुडा",
     subtitle: "शुभमंगल साखरपुडा समारंभ",
-    date: "शुक्रवार, दिनांक ०२ जानेवारी २०२६",
+    date: "शनिवार, दिनांक ०२ जानेवारी २०२७",
     time: "वेळ लवकरच कळविण्यात येईल",
     venue: "मधुवन, नेमळे, सावंतवाडी",
     mapUrl: ENGAGEMENT_MAP_URL,
     details:
-      "शुक्रवार, दिनांक ०२ जानेवारी २०२६ रोजी मधुवन, नेमळे, सावंतवाडी येथे साखरपुडा समारंभ आयोजित केला आहे.",
+      "शनिवार, दिनांक ०२ जानेवारी २०२७ रोजी मधुवन, नेमळे, सावंतवाडी येथे साखरपुडा समारंभ आयोजित केला आहे.",
     image: "/wedding/Traditional Marathi Engagement Invitation.png",
+  },
+  {
+    id: "haldi",
+    title: "हळद समारंभ",
+    subtitle: "मंगलमय हळदीचा सोहळा",
+    date: "रविवार, दिनांक ०३ जानेवारी २०२७",
+    time: "सायंकाळी ५:०० वाजता",
+    venue: "तेंडोली (तळेवाडी), कुडाळ",
+    mapUrl: HALDI_MAP_URL,
+    details:
+      "रविवार, दिनांक ०३ जानेवारी २०२७ रोजी सायंकाळी ५:०० वाजता तेंडोली (तळेवाडी), कुडाळ येथे हळद समारंभ आयोजित केला आहे.",
+    image: "/wedding/Tejas and Mansi’s Marathi Wedding Invitation.png",
   },
   {
     id: "wedding",
