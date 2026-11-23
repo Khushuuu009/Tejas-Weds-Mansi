@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -14,25 +15,42 @@ type EventItem = {
   venue: string;
   mapUrl: string;
   details: string;
-  image: string;
+  image?: string;
 };
 
 const VENUE_MAP_URL =
   "https://www.google.com/maps/search/?api=1&query=Siddhivinayak+Hall%2C+Kudal+Railway+Station+Road%2C+Kudal%2C+Sindhudurg%2C+Maharashtra+416520";
+
+const HALDI_MAP_URL =
+  "https://www.google.com/maps/search/?api=1&query=Tendoli+Talewadi%2C+Kudal%2C+Sindhudurg%2C+Maharashtra";
+
+const ENGAGEMENT_MAP_URL =
+  "https://www.google.com/maps/search/?api=1&query=Madhuwan%2C+Nemle%2C+Sawantwadi%2C+Sindhudurg%2C+Maharashtra";
 
 const events: EventItem[] = [
   {
     id: "haldi",
     title: "हळद समारंभ",
     subtitle: "मंगलमय हळदीचा सोहळा",
-    date: "रविवार, दिनांक ०३ जानेवारी २०२७",
+    date: "शनिवार, दिनांक ०३ जानेवारी २०२६",
     time: "सायंकाळी ५:०० वाजता",
-    venue: "सिद्धिविनायक हॉल, कुडाळ",
-    mapUrl: VENUE_MAP_URL,
+    venue: "तेंडोली (तळेवाडी), कुडाळ",
+    mapUrl: HALDI_MAP_URL,
     details:
-      "रविवार, दिनांक ०३ जानेवारी २०२७ रोजी सायंकाळी ५:०० वाजता हळद समारंभ आयोजित केला आहे.",
-    // हळदीची प्रतिमा public/wedding फोल्डरमध्ये ठेवा.
-    image: "/wedding/Tejas and Mansi’s Haldi Celebration.png",
+      "शनिवार, दिनांक ०३ जानेवारी २०२६ रोजी सायंकाळी ५:०० वाजता तेंडोली (तळेवाडी), कुडाळ येथे हळद समारंभ आयोजित केला आहे.",
+    image: "/wedding/Tejas and Mansi’s Marathi Wedding Invitation.png",
+  },
+  {
+    id: "engagement",
+    title: "साखरपुडा",
+    subtitle: "शुभमंगल साखरपुडा समारंभ",
+    date: "शुक्रवार, दिनांक ०२ जानेवारी २०२६",
+    time: "वेळ लवकरच कळविण्यात येईल",
+    venue: "मधुवन, नेमळे, सावंतवाडी",
+    mapUrl: ENGAGEMENT_MAP_URL,
+    details:
+      "शुक्रवार, दिनांक ०२ जानेवारी २०२६ रोजी मधुवन, नेमळे, सावंतवाडी येथे साखरपुडा समारंभ आयोजित केला आहे.",
+    image: "/wedding/Traditional Marathi Engagement Invitation.png",
   },
   {
     id: "wedding",
@@ -44,8 +62,7 @@ const events: EventItem[] = [
     mapUrl: VENUE_MAP_URL,
     details:
       "मार्गशीर्ष कृ. १२, शके १९४८, सोमवार, दिनांक ०४ जानेवारी २०२७ रोजी सकाळी ११:३५ मिनिटांनी शुभ मुहूर्तावर विवाह आयोजित केला आहे.",
-    // विवाहाची प्रतिमा public/wedding फोल्डरमध्ये ठेवा.
-    image: "/wedding/Tejas and Mansi’s Marathi Wedding Invitation.png",
+    image: "/wedding/ChatGPT Image Nov 23, 2026, 04_43_30 PM.png",
   },
 ];
 
@@ -54,7 +71,8 @@ export default function Home() {
   const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
 
   // पाच सेकंद कोणतीही हालचाल/क्लिक नसल्यास पान हळूहळू खाली सरकेल.
-  // वापरकर्ता पुन्हा interaction केल्यास scrolling थांबेल आणि ५ सेकंदांनी पुन्हा सुरू होईल.
+  // वापरकर्ता पुन्हा interaction केल्यास scrolling थांबेल
+  // आणि ५ सेकंदांनी पुन्हा सुरू होईल.
   useEffect(() => {
     if (selectedEvent) return;
 
@@ -99,7 +117,9 @@ export default function Home() {
     ] as const;
 
     activityEvents.forEach((eventName) => {
-      window.addEventListener(eventName, resetAutoScroll, { passive: true });
+      window.addEventListener(eventName, resetAutoScroll, {
+        passive: true,
+      });
     });
 
     resetAutoScroll();
@@ -137,8 +157,15 @@ export default function Home() {
             aria-hidden
             className="pointer-events-none fixed inset-0 z-[5] flex justify-center"
             initial={{ opacity: 0, y: -24 }}
-            animate={opened ? { opacity: 1, y: 0 } : { opacity: 0, y: -24 }}
-            transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+            animate={
+              opened
+                ? { opacity: 1, y: 0 }
+                : { opacity: 0, y: -24 }
+            }
+            transition={{
+              duration: 1.4,
+              ease: [0.22, 1, 0.36, 1],
+            }}
           >
             <img
               src="/curtains/open.webp"
@@ -151,8 +178,16 @@ export default function Home() {
           <motion.div
             className="relative z-10 mx-auto max-w-sm px-5 pb-10 pt-[22dvh]"
             initial={{ opacity: 0, scale: 0.96 }}
-            animate={opened ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.96 }}
-            transition={{ duration: 1.2, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            animate={
+              opened
+                ? { opacity: 1, scale: 1 }
+                : { opacity: 0, scale: 0.96 }
+            }
+            transition={{
+              duration: 1.2,
+              delay: 0.2,
+              ease: [0.22, 1, 0.36, 1],
+            }}
           >
             <div className="flex flex-col gap-5">
               {/* मुख्य निमंत्रण */}
@@ -160,14 +195,18 @@ export default function Home() {
                 <div className="px-5 py-8 text-center">
                   <h2
                     className="font-serif text-3xl font-bold tracking-wide text-[#B22222]"
-                    style={{ textShadow: "0 2px 6px rgba(227, 34, 34, 0.5)" }}
+                    style={{
+                      textShadow: "0 2px 6px rgba(227, 34, 34, 0.5)",
+                    }}
                   >
                     ॥ श्री गणेशाय नमः ॥
                   </h2>
 
                   <div className="my-4 flex items-center justify-center">
                     <div className="h-px w-12 bg-[#C9A45A]" />
-                    <span className="mx-3 text-lg text-[#C9A45A]">❦</span>
+                    <span className="mx-3 text-lg text-[#C9A45A]">
+                      ❦
+                    </span>
                     <div className="h-px w-12 bg-[#C9A45A]" />
                   </div>
 
@@ -180,7 +219,6 @@ export default function Home() {
                     सप्रेम नमस्कार विनंती विशेष
                   </p>
 
-                  {/* पत्रिकेतील सुरुवातीची ओळ — अंतिम प्रसिद्धीपूर्वी शब्दलेखन पडताळावे */}
                   <p className="mt-5 text-sm leading-7 text-[#8B2635]">
                     “श्री” कृपाकस्त आमच्या येथे आमचे ज्येष्ठ चिरंजीव
                   </p>
@@ -188,6 +226,7 @@ export default function Home() {
                   <h1 className="mt-3 font-serif text-4xl font-bold text-[#8B2635]">
                     चि. तेजस
                   </h1>
+
                   <p className="mt-3 text-sm leading-7 text-[#6f3d3d]">
                     (श्रीमती अरुणा व कै. अच्युत श्रीपाद प्रभू यांचे सुपुत्र)
                     <br />
@@ -196,13 +235,16 @@ export default function Home() {
 
                   <div className="my-4 flex items-center justify-center gap-4 text-[#C9A45A]">
                     <span>❧</span>
-                    <span className="font-semibold text-[#8B2635]">आणि</span>
+                    <span className="font-semibold text-[#8B2635]">
+                      आणि
+                    </span>
                     <span>❧</span>
                   </div>
 
                   <h2 className="font-serif text-3xl font-bold text-[#8B2635]">
                     चि. सौ. कां. मानसी
                   </h2>
+
                   <p className="mt-3 text-sm leading-7 text-[#6f3d3d]">
                     (सौ. ज्योत्स्ना व श्री. जयराम मधुकर राऊळ यांची ज्येष्ठ कन्या,
                     <br />
@@ -214,6 +256,7 @@ export default function Home() {
                   <h3 className="mt-6 font-serif text-3xl font-bold text-[#8B2635]">
                     ॥ यांचा शुभविवाह ॥
                   </h3>
+
                   <p className="mt-3 text-sm leading-7 text-[#8B2635]">
                     मार्गशीर्ष कृ. १२, शके १९४८, सोमवार,
                     <br />
@@ -223,6 +266,7 @@ export default function Home() {
                     <br />
                     विवाह करण्याचे योजिले आहे.
                   </p>
+
                   <p className="mt-4 text-sm leading-7 text-[#8B2635]">
                     आपले आशीर्वाद वधूवरांस लाभावेत याकरिता सहकुटुंब,
                     सहपरिवार आपली उपस्थिती प्रार्थनीय आहे.
@@ -236,6 +280,7 @@ export default function Home() {
                   <p className="text-xs tracking-[0.2em] text-[#a5783f]">
                     मंगलमय सोहळे
                   </p>
+
                   <h3 className="mt-3 font-serif text-2xl text-[#3a2d25]">
                     विवाह सोहळ्याचे कार्यक्रम
                   </h3>
@@ -249,27 +294,50 @@ export default function Home() {
                       initial={{ opacity: 0, y: 16 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true, amount: 0.25 }}
-                      transition={{ duration: 0.5, delay: index * 0.05 }}
+                      transition={{
+                        duration: 0.5,
+                        delay: index * 0.05,
+                      }}
                       onClick={() => setSelectedEvent(event)}
                       className="w-full rounded-[1.4rem] border border-[#ead9cd] bg-[#fffaf3] p-4 text-left shadow-[0_10px_25px_rgba(0,0,0,0.06)]"
                     >
                       <div className="flex items-center gap-3">
-                        {/* संबंधित कार्यक्रमाची निमंत्रण पत्रिका */}
-                        <div className="h-24 w-20 flex-none overflow-hidden rounded-[1.1rem] border border-[#e5cfaa] bg-[#f5ead7] shadow-sm">
-                          <img
-                            src={event.image}
-                            alt={`${event.title} निमंत्रण पत्रिका`}
-                            className="h-full w-full object-cover object-top transition-transform duration-500 hover:scale-105"
-                            loading="lazy"
-                          />
-                        </div>
+                        {/* कार्यक्रमाची प्रतिमा किंवा सजावटीचे चिन्ह */}
+                        {event.image ? (
+                          <div className="h-24 w-20 flex-none overflow-hidden rounded-[1.1rem] border border-[#e5cfaa] bg-[#f5ead7] shadow-sm">
+                            <img
+                              src={event.image}
+                              alt={`${event.title} निमंत्रण पत्रिका`}
+                              className="h-full w-full object-cover object-top transition-transform duration-500 hover:scale-105"
+                              loading="lazy"
+                            />
+                          </div>
+                        ) : (
+                          <div className="flex h-24 w-20 flex-none items-center justify-center rounded-[1.1rem] border border-[#e5cfaa] bg-[#f5ead7] text-3xl text-[#C9A45A]">
+                            ❦
+                          </div>
+                        )}
+
                         <div className="flex min-w-0 flex-1 flex-col justify-center">
-                          <p className="text-xs text-[#a5783f]">{event.subtitle}</p>
+                          <p className="text-xs text-[#a5783f]">
+                            {event.subtitle}
+                          </p>
+
                           <h4 className="mt-1 font-serif text-xl text-[#3a2d25]">
                             {event.title}
                           </h4>
-                          <p className="mt-1 text-xs text-[#6f5b4d]">{event.date}</p>
-                          <p className="text-xs text-[#6f5b4d]">{event.time}</p>
+
+                          <p className="mt-1 text-xs text-[#6f5b4d]">
+                            {event.date}
+                          </p>
+
+                          <p className="text-xs text-[#6f5b4d]">
+                            {event.time}
+                          </p>
+
+                          <p className="mt-1 text-xs text-[#8B2635]">
+                            {event.venue}
+                          </p>
                         </div>
                       </div>
                     </motion.button>
@@ -282,9 +350,11 @@ export default function Home() {
                 <p className="text-xs tracking-[0.2em] text-[#a5783f]">
                   विवाहस्थळ
                 </p>
+
                 <h3 className="mt-3 font-serif text-2xl text-[#3a2d25]">
                   सिद्धिविनायक हॉल
                 </h3>
+
                 <p className="mt-2 text-sm leading-7 text-[#6f5b4d]">
                   इंग्लिश स्कूलजवळ,
                   <br />
@@ -292,6 +362,7 @@ export default function Home() {
                   <br />
                   सिंधुदुर्ग – ४१६५२०
                 </p>
+
                 <a
                   href={VENUE_MAP_URL}
                   target="_blank"
@@ -307,11 +378,13 @@ export default function Home() {
                 <p className="text-xs tracking-[0.2em] text-[#a5783f]">
                   निवासस्थान
                 </p>
+
                 <h3 className="mt-3 font-serif text-2xl text-[#3a2d25]">
-                  तेंडोली (तळवाडी)
+                  तेंडोली (तळेवाडी)
                 </h3>
+
                 <p className="mt-2 text-sm leading-7 text-[#6f5b4d]">
-                  मु. पो. तेंडोली (तळवाडी),
+                  मु. पो. तेंडोली (तळेवाडी),
                   <br />
                   कुडाळ, सिंधुदुर्ग – ४१६५२०
                 </p>
@@ -324,9 +397,19 @@ export default function Home() {
                   <br />
                   ही नम्र विनंती.
                 </p>
-                <div className="my-4 text-2xl text-[#C9A45A]">❦</div>
-                <h2 className="font-serif text-2xl text-[#8B2635]">चि. तेजस</h2>
-                <div className="my-2 text-xl text-[#C9A45A]">आणि</div>
+
+                <div className="my-4 text-2xl text-[#C9A45A]">
+                  ❦
+                </div>
+
+                <h2 className="font-serif text-2xl text-[#8B2635]">
+                  चि. तेजस
+                </h2>
+
+                <div className="my-2 text-xl text-[#C9A45A]">
+                  आणि
+                </div>
+
                 <h2 className="font-serif text-2xl text-[#8B2635]">
                   चि. सौ. कां. मानसी
                 </h2>
@@ -352,16 +435,27 @@ export default function Home() {
                   onClick={(event) => event.stopPropagation()}
                   className="mx-auto flex max-h-[94dvh] w-full max-w-md flex-col overflow-y-auto rounded-2xl border border-[#ead9cd] bg-[#fffaf3] p-3 text-center text-[#3a2d25] sm:p-4"
                 >
-                  {/* पूर्ण निमंत्रण प्रतिमा — crop न करता */}
-                  <div className="flex shrink-0 justify-center overflow-hidden rounded-xl bg-[#f5ead7]">
-                    <img
-                      src={selectedEvent.image}
-                      alt={`${selectedEvent.title} निमंत्रण पत्रिका`}
-                      className="mx-auto max-h-[60dvh] w-auto max-w-full object-contain"
-                    />
-                  </div>
+                  {/* पूर्ण निमंत्रण प्रतिमा */}
+                  {selectedEvent.image ? (
+                    <div className="flex shrink-0 justify-center overflow-hidden rounded-xl bg-[#f5ead7]">
+                      <img
+                        src={selectedEvent.image}
+                        alt={`${selectedEvent.title} निमंत्रण पत्रिका`}
+                        className="mx-auto max-h-[60dvh] w-auto max-w-full object-contain"
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex min-h-36 shrink-0 flex-col items-center justify-center rounded-xl border border-[#e5cfaa] bg-[#f5ead7]">
+                      <span className="text-4xl text-[#C9A45A]">
+                        ❦
+                      </span>
+                      <p className="mt-2 font-serif text-lg text-[#8B2635]">
+                        शुभमंगल साखरपुडा
+                      </p>
+                    </div>
+                  )}
 
-                  {/* संक्षिप्त कार्यक्रम माहिती */}
+                  {/* कार्यक्रमाची माहिती */}
                   <div className="shrink-0 pt-3">
                     <p className="text-xs text-[#a5783f]">
                       {selectedEvent.subtitle}
@@ -375,10 +469,16 @@ export default function Home() {
                       {selectedEvent.date}
                     </p>
 
-                    <p className="text-xs leading-5">{selectedEvent.time}</p>
+                    <p className="text-xs leading-5">
+                      {selectedEvent.time}
+                    </p>
 
                     <p className="mt-1 text-xs leading-5">
                       {selectedEvent.venue}
+                    </p>
+
+                    <p className="mt-3 px-2 text-xs leading-6 text-[#6f5b4d]">
+                      {selectedEvent.details}
                     </p>
 
                     <a
