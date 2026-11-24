@@ -7,6 +7,7 @@ import { MusicProvider } from "@/components/MusicPlayer";
 
 type EventItem = {
   id: string;
+  isoDate: string; // YYYY-MM-DD — isi se order sort hota hai
   title: string;
   subtitle: string;
   date: string;
@@ -30,6 +31,7 @@ const ENGAGEMENT_MAP_URL =
 const events: EventItem[] = [
   {
     id: "engagement",
+    isoDate: "2027-01-02",
     title: "साखरपुडा",
     subtitle: "शुभमंगल साखरपुडा समारंभ",
     date: "शनिवार, दिनांक ०२ जानेवारी २०२७",
@@ -42,6 +44,7 @@ const events: EventItem[] = [
   },
   {
     id: "haldi",
+    isoDate: "2027-01-03",
     title: "हळद समारंभ",
     subtitle: "मंगलमय हळदीचा सोहळा",
     date: "रविवार, दिनांक ०३ जानेवारी २०२७",
@@ -54,6 +57,7 @@ const events: EventItem[] = [
   },
   {
     id: "wedding",
+    isoDate: "2027-01-04",
     title: "शुभविवाह",
     subtitle: "शुभमंगल सावधान",
     date: "सोमवार, दिनांक ०४ जानेवारी २०२७",
@@ -65,6 +69,11 @@ const events: EventItem[] = [
     image: "/wedding/ChatGPT Image Nov 23, 2026, 04_43_30 PM.png",
   },
 ];
+
+// तारखेनुसार आपोआप क्रम लावतो (शनिवार → रविवार → सोमवार)
+const sortedEvents = [...events].sort((a, b) =>
+  a.isoDate.localeCompare(b.isoDate)
+);
 
 export default function Home() {
   const [opened, setOpened] = useState(false);
@@ -287,7 +296,7 @@ export default function Home() {
                 </div>
 
                 <div className="mt-5 space-y-4">
-                  {events.map((event, index) => (
+                  {sortedEvents.map((event, index) => (
                     <motion.button
                       key={event.id}
                       type="button"
