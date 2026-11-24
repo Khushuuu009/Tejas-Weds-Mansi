@@ -82,7 +82,7 @@ export function MusicProvider({
 
       <audio
         ref={audioRef}
-        src="/audio/vedaMilan.mp3"
+        src="/audio/marathi.mp3"
         preload="auto"
         loop
       />
